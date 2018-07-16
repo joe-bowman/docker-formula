@@ -19,7 +19,7 @@ docker_package_dependencies:
 
 {% if docker.install_docker_py %}
   pip.installed:
-    - name: {{ docker.python_package|default('docker-py') }} {{ docker.pip_version|default('') }}
+    - name: {{ docker.get('python_package', 'docker-py') }} {{ docker.get('pip_version', '') }}
     - reload_modules: True
 {% endif %}
 
