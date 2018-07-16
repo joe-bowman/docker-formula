@@ -151,16 +151,7 @@ docker-config:
     - mode: 644
     - user: root
 
-docker-service:
-  service.running:
-    - name: docker
-    - enable: True
-    - watch:
-      - file: /etc/default/docker
-      - pkg: docker package
-    {% if "process_signature" in docker %}
-    - sig: {{ docker.process_signature }}
-    {% endif %}
+
 
 
 {% if docker.install_docker_py %}
@@ -179,3 +170,35 @@ docker-py:
     {%- endif %}
     - reload_modules: true
 {% endif %}
+
+
+docker_config_json:
+  file.serialize:
+    - name: /root/.docker/config.json
+    - dataset_pillar: docker:config_json
+    - formatter: json
+    - mode: 644
+    - user: root
+
+docker_daemon_json:
+  file.serialize:
+    - name: /etc/docker/daemon.json
+    - dataset_pillar: docker:daemon_json
+    - formatter: json
+    - onlyif: {{ pillar.get('docker').get('daemon_json', False) != False }}
+    - mode: 644
+    - user: root
+
+docker-service:
+  service.running:
+    - name: docker
+    - enable: True
+    - restarted: True
+    - watch:
+      - file: /etc/default/docker
+      - pkg: docker package
+    {% if "process_signature" in docker %}
+    - sig: {{ docker.process_signature }}
+    {% endif %}
+    - file: docker_daemon_json
+    - file: docker_config_json
