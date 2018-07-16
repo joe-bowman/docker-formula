@@ -10,7 +10,7 @@ docker_package_dependencies:
       - iptables
       - ca-certificates
 {% if docker.kernel.pkgs is defined %}
-      {{ docker.kernel.pkgs|yaml(False)|indent(6) }}
+      {{ docker.kernel.pkgs|yaml|indent(6) }}
 {% endif %}
 {% if docker.install_docker_py %}
       - {{ docker.python_pip_package }}
