@@ -17,20 +17,48 @@ provisioner:
 platforms:
   - name: ubuntu-16.04
     driver_config:
-      image: ubuntu:16.04
       provision_command:
         - apt-get update && apt-get install -y locales ifupdown
         - locale-gen en_US.UTF-8
         - update-locale LANG=en_US.UTF-8
       run_command: /lib/systemd/systemd
-  - name: debian-jessie
+  - name: ubuntu-18.04
+    driver_config:
+      provision_command:
+        - apt-get update && apt-get install -y locales ifupdown
+        - locale-gen en_US.UTF-8
+        - update-locale LANG=en_US.UTF-8
+      run_command: /lib/systemd/systemd
+  - name: debian-8
+    driver_config:
+      provision_command:
+        - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales systemd-sysv
+        - sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen || true
+        - dpkg-reconfigure --frontend=noninteractive locales || true
+        - update-locale LANG=en_US.UTF-8 || true
+      run_command: /lib/systemd/systemd
+  - name: debian-9
     driver_config:
       provision_command:
         - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales
         - sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen || true
         - dpkg-reconfigure --frontend=noninteractive locales || true
         - update-locale LANG=en_US.UTF-8 || true
-      run_command: /lib/systemd/systemd
+  - name: centos-7
+    driver_config:
+      run_command: /usr/sbin/init
+      privileged: true
+      provision_command:
+        - sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+        - systemctl enable sshd.service
+      run_command: /usr/sbin/init
+  - name: fedora-27
+    driver_config:
+      run_command: /usr/sbin/init
+      privileged: true
+      provision_command:
+        - sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+        - systemctl enable sshd.service
 
 suites:
   - name: default
@@ -45,8 +73,9 @@ suites:
           docker:
             version: '1.13.1*'
     excludes:
-      - debian-jessie
-      
+      - fedora-27
+      - ubuntu-18.04
+
   - name: version-1.6.2
     provisioner:
       pillars:
@@ -59,6 +88,20 @@ suites:
             version: '1.6.2*'
     excludes:
       - ubuntu-16.04
+      - ubuntu-18.04
+      - fedora-27
+      - centos-7
+
+  - name: version-18.03
+    provisioner:
+      pillars:
+        top.sls:
+          base:
+            '*':
+              - docker
+        docker.sls:
+          docker:
+            version: '18.03*'
 
 verifier:
   name: shell

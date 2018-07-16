@@ -1,9 +1,5 @@
 {% from "docker/map.jinja" import docker with context %}
 
-pkgrepo dependencies:
-  pkg.installed:
-    - name: python-apt
-
 {% if "pkgrepo" in docker.kernel %}
 {{ grains["oscodename"] }}-backports-repo:
   pkgrepo.managed:
@@ -11,7 +7,7 @@ pkgrepo dependencies:
     - {{ key }}: {{ value }}
     {% endfor %}
     - require:
-      - pkg: python-apt
+      - pkg: docker package dependencies
     - onlyif: dpkg --compare-versions {{ grains["kernelrelease"] }} lt 3.8
 {% endif %}
 
@@ -25,4 +21,3 @@ docker-dependencies-kernel:
       - pkg: docker package
     - onlyif: dpkg --compare-versions {{ grains["kernelrelease"] }} lt 3.8
 {% endif %}
-
