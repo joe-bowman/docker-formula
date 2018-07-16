@@ -179,6 +179,7 @@ docker_config_json:
     - formatter: json
     - mode: 644
     - user: root
+    - makedirs: True
 
 docker_daemon_json:
   file.serialize:
@@ -188,6 +189,7 @@ docker_daemon_json:
     - onlyif: {{ pillar.get('docker').get('daemon_json', False) != False }}
     - mode: 644
     - user: root
+    - makedirs: True
 
 docker-service:
   service.running:
