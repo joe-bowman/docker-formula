@@ -52,8 +52,8 @@ docker_compose_systemd_{{ service }}:
     - source: salt://docker/files/compose_service_file.jinja
     - template: jinja
     - context:
-      - working_dir: {{ compose_path }}/{{ service }}
-      - name: {{ service }}
+      working_dir: {{ compose_path }}/{{ service }}
+      name: {{ service }}
 
 docker_compose_enable_{{ service }}:
   service.enabled:
