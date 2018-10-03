@@ -6,7 +6,7 @@
 docker_compose_directory_{{ service }}:
   file.directory:
     - name: {{ compose_path }}/{{ service }}
-    - make_dirs: True
+    - makedirs: True
     - user: docker
     - group: docker
     - recurse:
