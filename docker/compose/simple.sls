@@ -2,7 +2,7 @@
 
 {% set compose_path = docker.get('compose', {}).get('simple').get('base_path', '/etc/docker/compose') %}
 
-{% for service, config in docker.get('compose', {}).get('simple') %}
+{% for service, config in docker.get('compose', {}).get('simple', {}).items() %}
 docker_compose_directory_{{ service }}:
   file.directory:
     - name: {{ compose_path }}/{{ service }}
