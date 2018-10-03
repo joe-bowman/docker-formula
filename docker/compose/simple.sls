@@ -21,7 +21,7 @@ docker_compose_managed_compose_file_{{ service }}:
     - user: docker
     - group: docker
 
-  {% elseif config.get('compose', False) %}
+  {% elif config.get('compose', False) %}
 docker_compose_managed_compose_file_{{ service }}:
   file.serialize:
     - name: {{ compose_path }}/{{ service }}/docker-compose.yml
