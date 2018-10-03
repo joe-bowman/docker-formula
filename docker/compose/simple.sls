@@ -33,8 +33,20 @@ docker_compose_managed_compose_file_{{ service }}:
 
   {% endif %}
 
+  {% if config.get('env', False) %}
+docker_compose_manage_env_file_{{ service }}:
+  file.managed:
+    - name: {{ compose_path }}/{{ service }}/.env
+    - source: salt://docker/files/.env.jinja
+    - template: jinja
+    - context:
+        config: {{ config.get('env') }}
+    - user: docker
+    - group: docker
+  {% endif %}
+
   {% if config.get('service', False) %}
-docker_compose_systemd_service:
+docker_compose_systemd_{{ service }}:
   file.managed:
     - name: /etc/systemd/system/docker-{{ service }}.service
     - source: salt://docker/files/compose_service_file.jinja
@@ -43,7 +55,7 @@ docker_compose_systemd_service:
       - working_dir: {{ compose_path }}/{{ service }}
       - name: {{ service }}
 
-docker_compose_enable_service:
+docker_compose_enable_{{ service }}:
   service.enabled:
     - name: docker-{{ service }}
 
