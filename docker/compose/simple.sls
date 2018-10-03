@@ -59,6 +59,7 @@ docker_compose_enable_{{ service }}:
   service.enabled:
     - name: docker-{{ service }}
 
+docker_compose_running_{{ service }}:
   service.running:
     - name: docker-{{ service }}
   {% endif %}
