@@ -1,0 +1,15 @@
+[Unit]
+Description=Docker compose service for {{ name }}
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+WorkingDirectory={{ working_dir }}
+ExecStart=/usr/local/bin/docker-compose up --no-build
+ExecStop=/usr/local/bin/docker-compose down
+
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
