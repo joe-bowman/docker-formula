@@ -33,16 +33,18 @@ docker_compose_managed_compose_file_{{ service }}:
     - group: docker
 
   {% endif %}
-
-  {% for dst, src in config.get('copy_env_files', {}).items() %}
+  {% if config.get('copy_env_files') != None %}
+    {% for dst, src in config.get('copy_env_files', {}).items() %}
 docker_compose_copy_env_file_{{ service }}_{{ dst|replace('/', '_') }}:
   file.managed:
     - name: {{ compose_path }}/{{ service }}/{{ dst }}
     - src: {{ src }}
     - user: docker
     - group: docker
-  {% endfor %}
-
+    - makedirs: True
+    {% endfor %}
+  {% endif %}
+  
   {% if config.get('env', False) %}
 docker_compose_manage_env_file_{{ service }}:
   file.managed:
