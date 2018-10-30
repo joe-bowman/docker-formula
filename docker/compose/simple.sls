@@ -27,7 +27,8 @@ docker_compose_managed_compose_file_{{ service }}:
     - name: {{ compose_path }}/{{ service }}/docker-compose.yml
     - dataset:
         version: '3.4'
-        services: {{ config.get('compose') }}
+        volumes: {{ config.get('compose').get('volumes', {}) }}
+        services: {{ config.get('compose').get('services', {}) }}
     - user: docker
     - group: docker
 
