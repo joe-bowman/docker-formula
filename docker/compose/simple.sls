@@ -38,13 +38,13 @@ docker_compose_managed_compose_file_{{ service }}:
 docker_compose_copy_env_file_{{ service }}_{{ dst|replace('/', '_') }}:
   file.managed:
     - name: {{ compose_path }}/{{ service }}/{{ dst }}
-    - src: {{ src }}
+    - source: {{ src }}
     - user: docker
     - group: docker
     - makedirs: True
     {% endfor %}
   {% endif %}
-  
+
   {% if config.get('env', False) %}
 docker_compose_manage_env_file_{{ service }}:
   file.managed:
