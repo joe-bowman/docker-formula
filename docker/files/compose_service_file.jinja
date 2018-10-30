@@ -4,6 +4,9 @@ Requires=docker.service
 After=docker.service
 
 [Service]
+{% for k,v in env_vars.items() %}
+Environment={{ k }}="{{ v }}"
+{% endfor %}
 Restart=always
 WorkingDirectory={{ working_dir }}
 ExecStart=/usr/local/bin/docker-compose up --no-build

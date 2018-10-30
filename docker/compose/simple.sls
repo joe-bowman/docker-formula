@@ -34,6 +34,15 @@ docker_compose_managed_compose_file_{{ service }}:
 
   {% endif %}
 
+  {% for dst, src in config.get('copy_env_files', {}).items() %}
+docker_compose_copy_env_file_{{ service }}_{{ dst|replace('/', '_') }}:
+  file.managed:
+    - name: {{ compose_path }}/{{ service }}/{{ dst }}
+    - src: {{ src }}
+    - user: docker
+    - group: docker
+  {% endfor %}
+
   {% if config.get('env', False) %}
 docker_compose_manage_env_file_{{ service }}:
   file.managed:
@@ -55,6 +64,7 @@ docker_compose_systemd_{{ service }}:
     - context:
         working_dir: {{ compose_path }}/{{ service }}
         name: {{ service }}
+        env_vars: {{ config.get('env_vars', {}) }}
 
 docker_compose_enable_{{ service }}:
   service.enabled:
