@@ -1,5 +1,3 @@
-{%- from 'cosmos/map.jinja' import cosmos with context %}
-
 ecr_helper_prerequisites:
   pkg.installed:
     - name: git
